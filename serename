@@ -1,0 +1,158 @@
+#!/bin/sh
+# serename
+# shellcheck disable=SC2317
+
+VERSION='1.0.0'
+
+serename_main() {
+	trap _exit INT TERM
+
+	E_ARGS=16
+	E_MISSING_APP=17
+
+	SCRIPT_INV="$( basename "$0" )"
+	SCRIPT_PATH="$( readlink -f "$0" )"
+	SCRIPT_NAME="$( basename "$SCRIPT_PATH" )"
+
+	DRY_RUN=0
+	PROMPT=1
+
+	while getopts hvny opt
+	do
+		case $opt in
+			h) cmd=help ;;
+			v) cmd=version ;;
+			n) DRY_RUN=1 ;;
+			y) PROMPT=0 ;;
+			*) _invalid_opt ;;
+		esac
+	done
+
+	shift "$(( OPTIND - 1 ))"
+
+	[ -z "$cmd" ] && cmd="process"
+
+	case "$cmd" in
+		help|process|version) "serename_$cmd" "$@" ;;
+		*) _invalid_cmd ;;
+	esac
+
+	_exit
+}
+
+serename_help() {
+cat <<USAGE
+$SCRIPT_NAME $VERSION
+
+USAGE: $SCRIPT_INV [<options>] <regexp> [<paths>...]
+
+Rename files and directories using regular expressions via sed.
+
+If no paths are defined, the entries in the current directory will be used,
+except hidden files and directories.
+
+Regular expressions are modern ones used by sed, for example:
+
+	s/^(.*)\.txt$/\1.md/
+
+OPTIONS:
+
+	-h        Show this help screen.
+	-v        Show script name and version number.
+	-n        Dry run. Do not perform the renames.
+	-y        Do not prompt before renaming each file.
+
+USAGE
+}
+
+serename_process() {
+	_require grep sed
+
+	[ $# -lt 1 ] && _fatal "$E_ARGS" "Missing regular expression. Run with -h for help."
+
+	regexp="$1"
+	[ $# -gt 0 ] && shift
+	[ $# -eq 0 ] && set -- *
+
+	for in_path in "$@"
+	do
+		out_name="$( basename "$in_path" | sed -E "$regexp" )"
+
+		[ "$in_path" = "$out_name" ] && continue
+
+		printf "%s -> %s" "$in_path" "$out_name"
+
+		if [ "$DRY_RUN" -eq 0 ]
+		then
+			if [ "$PROMPT" -ne 0 ]
+			then
+				printf " [y/N] "
+				read -r answer
+				[ "$( echo "$answer" | head -1 | sed -E 's/Y/y/' )" != "y" ] && continue
+			fi
+
+			echo
+			mv "$in_path" "$out_name"
+		else
+			echo
+		fi
+	done
+}
+
+serename_version() {
+	_echo "$SCRIPT_NAME $VERSION"
+}
+
+_echo() {
+	echo "$@"
+}
+
+_error() {
+	_echo "$@" >&2
+}
+
+_exit() {
+	exit_code=$?
+	exit $exit_code
+}
+
+_fatal() {
+	exit_code="$1"
+	shift
+	_error "$@"
+	exit "$exit_code"
+}
+
+_invalid_cmd() {
+	_error "Invalid command: $cmd"
+	_echo
+	serename_help
+	exit $E_ARGS
+}
+
+_invalid_opt() {
+	_error "Invalid option: $opt"
+	_echo
+	serename_help
+	exit $E_ARGS
+}
+
+_require() {
+	missing_bin=0
+
+	for bin in "$@"
+	do
+		if ! which "$bin" > /dev/null 2>&1
+		then
+			missing_bin=1
+			_error "Required: $bin"
+		fi
+	done
+
+	if [ "$missing_bin" -ne 0 ]
+	then
+		_fatal "$E_MISSING_APP" "One or more executables or apps are missing."
+	fi
+}
+
+serename_main "$@"
