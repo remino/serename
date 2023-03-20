@@ -1,14 +1,11 @@
-template
+serename
 ========
 
-By Author <https://example.com>
+By Rémino Rem <https://remino.net>
 
-Short description of app or project.
+Rename files and directories using regular expressions via sed.
 
-[Docs](https://example.com/)
-| [Demo](https://example.com/)
-| [Code](https://example.com/)
-| [Download](https://example.com/)
+<https://github.com/remino/serename>
 
 - [About](#about)
 	- [Built With](#built-with)
@@ -23,62 +20,11 @@ Short description of app or project.
 
 
 
-## About
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Longer description of product.
-
-[Back to top](#template)
-
-
-
-### Built With
-
-- [Node.js](https://nodejs.org/)
-- etc.
-
-[Back to top](#template)
-
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-### Prerequisites
-
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-    ```sh
-    git clone https://github.com/github_username/repo_name.git
-    ```
-3. Install NPM packages
-    ```sh
-    npm install
-    ```
-4. Enter your API in `config.js`
-    ```js
-    const API_KEY = 'ENTER YOUR API';
-    ```
-
-[Back to top](#template)
-
-
-
 ## Usage
 
-Example usage of app or project.
+Run with `serename -h` for the help screen.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-[Back to top](#template)
+[Back to top](#serename)
 
 
 
@@ -95,7 +41,7 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-[Back to top](#template)
+[Back to top](#serename)
 
 
 
@@ -103,24 +49,4 @@ Don't forget to give the project a star! Thanks again!
 
 Distributed under the ISC License. See `LICENSE.txt` for more information.
 
-[Back to top](#template)
-
-
-
-## Contact
-
-Rémino Rem
-https://remino.net/
-
-[Back to top](#template)
-
-
-
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-[Back to top](#template)
-
+[Back to top](#serename)
