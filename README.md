@@ -1,3 +1,17 @@
+# `serename` is no longer maintained
+
+The `serename` script was abandoned in favour of
+[`rename`](http://plasmasturm.org/code/rename) as well as
+[`pipe-rename`](https://github.com/marcusbuffett/pipe-rename).
+
+```sh
+# The following lines produce equivalent results:
+rename 's/a/b/' *
+serename 's/a/b/' *
+```
+
+---
+
 serename
 ========
 
